@@ -4,6 +4,6 @@ const homeController = require("../controllers/index");
 
 router.get("/", homeController.getIndex);
 router.get("/api/ping", homeController.getPing);
-router.get("/api/posts/", homeController.getPosts);
+router.get("/api/posts", homeController.getPosts);
 
 module.exports = router;

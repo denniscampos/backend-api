@@ -1,4 +1,5 @@
 const axios = require("axios");
+const _ = require("lodash");
 
 module.exports = {
   getIndex: (req, res) => {
@@ -25,17 +26,53 @@ module.exports = {
   // Route 2
   getPosts: async (req, res) => {
     try {
-      console.log(req.query);
-      // 1) handle error cases
-      // 2) split tags to have array of tags
-      // use for loop  async calls
-      // concat results ?
-      // use lodash sortBy
+      const { tags, sortBy = "id", direction = "asc" } = req.query;
 
-      await axios.get(
-        "https://api.hatchways.io/assessment/blog/posts?tag=tech"
+      let sortValues = ["id", "reads", "likes", "popularity"];
+      let directionValues = ["asc", "desc"];
+
+      if (!req.query.tags) {
+        res.status(400).send({
+          error: "tags parameter is required!",
+        });
+      }
+
+      if (sortBy && sortValues.indexOf(sortBy.toLowerCase()) === -1) {
+        res.status(400).send({
+          error: "sortBy parameter is invalid",
+        });
+      }
+
+      if (
+        direction &&
+        directionValues.indexOf(direction.toLowerCase()) === -1
+      ) {
+        res.status(400).send({
+          error: "direction parameter is invalid",
+        });
+      }
+
+      const tagValues = tags.split(",");
+
+      const requests = [];
+
+      for (let tag of tagValues) {
+        requests.push(
+          axios.get(
+            `https://api.hatchways.io/assessment/blog/posts?tag=${tag}&sortBy=${sortBy}&direction=${direction}`
+          )
+        );
+      }
+
+      const results = await axios.all(requests);
+
+      const allPosts = results.reduce(
+        (previousValue, value) =>
+          _.unionWith(previousValue, value.data.posts, _.isEqual),
+        []
       );
-      // );
+
+      res.send(_.orderBy(allPosts, [sortBy], [direction]));
     } catch (err) {
       console.log("Something went wrong: ", err);
     }
