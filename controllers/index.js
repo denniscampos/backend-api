@@ -2,29 +2,17 @@ const axios = require("axios");
 const _ = require("lodash");
 
 module.exports = {
-  getIndex: (req, res) => {
-    try {
-      axios
-        .get("https://api.hatchways.io/assessment/blog/posts?tag=tech")
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-      res.status(200);
-      res.send("Success");
-    } catch (err) {
-      console.log("something went wrong: ", err);
-    }
-  },
   // Route 1
-  getPing: (req, res) => {
+  getPing: (req, res, next) => {
     try {
       res.status(200).send({ success: true });
     } catch (err) {
-      console.log("something went wrong: ", err);
+      next(err)
+      // console.log("something went wrong: ", err);
     }
   },
   // Route 2
-  getPosts: async (req, res) => {
+  getPosts: async (req, res, next) => {
     try {
       const { tags, sortBy = "id", direction = "asc" } = req.query;
 
@@ -74,7 +62,8 @@ module.exports = {
 
       res.send(_.orderBy(allPosts, [sortBy], [direction]));
     } catch (err) {
-      console.log("Something went wrong: ", err);
+      next(err)
+      // console.log("Something went wrong: ", err);
     }
   },
 };

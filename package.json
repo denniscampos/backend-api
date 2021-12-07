@@ -4,18 +4,21 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon server",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apicache": "^1.6.3",
     "axios": "^0.24.0",
     "express": "^4.17.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "jest": "^27.4.3",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
   }
 }
