@@ -9,4 +9,5 @@ To run the app please use the following command in your CLI:
 - Lodash
 - Axios
 
-Testing completed using JEST.
+Test completed using JEST. To run tests, run the following command in your cli:
+`npm run test`

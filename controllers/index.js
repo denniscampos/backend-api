@@ -3,16 +3,16 @@ const _ = require("lodash");
 
 module.exports = {
   // Route 1
-  getPing: (req, res, next) => {
+  getPing: (req, res) => {
     try {
       res.status(200).send({ success: true });
     } catch (err) {
-      next(err)
-      // console.log("something went wrong: ", err);
+      console.log("something went wrong: ", err);
     }
   },
+  
   // Route 2
-  getPosts: async (req, res, next) => {
+  getPosts: async (req, res) => {
     try {
       const { tags, sortBy = "id", direction = "asc" } = req.query;
 
@@ -25,7 +25,7 @@ module.exports = {
         });
       }
 
-      if (sortBy && sortValues.indexOf(sortBy.toLowerCase()) === -1) {
+      if (sortBy && sortValues.indexOf(sortBy.toLowerCase()) === - 1) {
         res.status(400).send({
           error: "sortBy parameter is invalid",
         });
@@ -33,7 +33,7 @@ module.exports = {
 
       if (
         direction &&
-        directionValues.indexOf(direction.toLowerCase()) === -1
+        directionValues.indexOf(direction.toLowerCase()) === - 1
       ) {
         res.status(400).send({
           error: "direction parameter is invalid",
@@ -52,6 +52,7 @@ module.exports = {
         );
       }
 
+      // To make concurrent requests. 
       const results = await axios.all(requests);
 
       const allPosts = results.reduce(
@@ -62,8 +63,7 @@ module.exports = {
 
       res.send(_.orderBy(allPosts, [sortBy], [direction]));
     } catch (err) {
-      next(err)
-      // console.log("Something went wrong: ", err);
+      console.log("Something went wrong: ", err);
     }
   },
 };
